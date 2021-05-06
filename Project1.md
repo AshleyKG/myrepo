@@ -135,9 +135,9 @@ txcoviddata2 <-  txcoviddata %>%
   mutate("pop_1a" = (pop_healthcare + pop_ltcr)) %>%
   #create variable representing total population that falls under phase 1b elligibility
   mutate("pop_1b" = (pop_condition + pop_education + pop_65)) %>%
-  #create variable representing total population elligible for vaccine
+  #create variable representing total population eligible for vaccine
    mutate("pop_elligible" = (pop_1a + pop_1b)) %>%
-  #create variable representing proportion of elligible population vaccinated
+  #create variable representing proportion of eligible population vaccinated
   mutate("prop_elligible_vaccinated" = (pop_one_plus_doses/pop_elligible)) %>%
   #create categorical variable indicating if the county has a high, medium, or low level of cases
   mutate(case_level = case_when(confirmed_cases>10000 ~ "high", 
@@ -260,40 +260,47 @@ cor(txcoviddata2_num, use = "pairwise.complete.obs")
 
 Using the mutate function, I created two new variables: pop\_1a and
 pop\_1b. pop\_1a represents the total population of county citizens that
-are elligible for the vaccine under the conditions of Phase 1a, meaning
+are eligible for the vaccine under the conditions of Phase 1a, meaning
 that they are healthcare workers or long-term care residents and
 employees. pop\_1b represents the total population of each county that
-is elligible for the Covid-19 vaccine based on Phase 1b. This means that
+is eligible for the Covid-19 vaccine based on Phase 1b. This means that
 they are either aged 65 or older, aged 16-64 with a medical condition
 that puts them at high risk of a severe Covid-19 case, or an
 education/child-care employee. I then combined the two variables to
 create a variable adding up the total known population of individuals
-elligible for the vaccine. Using this new variable, pop\_elligible, I
-created a proportion of the elligible population that has been
+eligible for the vaccine. Using this new variable, pop\_elligible, I
+created a proportion of the eligible population that has been
 vaccinated. This is under the assumptions that a) only those who are
-truly elligible for the vaccine are being vaccinated, and b) the total
+truly eligible for the vaccine are being vaccinated, and b) the total
 doses administered per county have been administered to county citizens
 and not those living in other areas. Lastly, I created a variable called
 case\_level which divided the counties into high, medium, or low
 depending on how many total covid cases they have.
 
 I calculated the average number of cases, vaccine doses administered,
-elligible population, and proportion of the elligible population that
-has been vaccinated both overall and when the dataset has been grouped
-based by case level. Altogether, the average number of covid cases
-across the counties in Texas is 9174.08 cases with a standard deviation
-of 34062.57 cases. The mean number of doses administered is 26902.38
-doses. The mean elligible population is 56699.36 people with an average
-proportion of vaccinated population of 0.31.
+eligible population, and proportion of the eligible population that has
+been vaccinated both overall and when the dataset has been grouped based
+by case level. Altogether, the average number of covid cases across the
+counties in Texas is 9174.08 cases with a standard deviation of 34062.57
+cases. The mean number of doses administered is 26902.38 doses. The mean
+eligible population is 56699.36 people with an average proportion of
+vaccinated population of 0.31.
 
-When grouped by case level, those in the “high” case level have larger
-average values for each variable with the exception of the mean
-proportion of those vaccinated. The higher average number of cases,
-doses administered, and elligible population are expected as we would
-likely see these larger numbers in a more densely populated county.
-Counties with higher numbers of cases will also see larger numbers of
-doses being distributed to them, as they are at a higher risk level
-overall than less populated counties.
+When grouped by case level, those in the “high” case level had the
+largest average number of Covid-19 cases, 56,244.31 cases, and the
+largest average number of doses distributed, 160,378.71 doses. The
+average eligible population was also the highest with 326,685.11
+individuals. The higher average number of cases, doses administered, and
+eligible population are expected as we would likely see these larger
+numbers in a more densely populated county. Counties with higher numbers
+of cases will also see larger numbers of doses being distributed to
+them, as they are at a higher risk level overall than less populated
+counties. Larger counties will also have greater access to resources
+that allow for them to store the vaccines that require specific, low
+temperatures such as -80 degree Celsius freezers. Each of these factors
+diminishes as we look at smaller counties. Rural areas, where the less
+populated counties often are located, often do not possess the resources
+or manpower to maintain a vaccine stock as grand as the larger counties.
 
 Lastly, I calculated a correlation matrix for the dataset which will be
 visualized in the next section.
@@ -353,7 +360,7 @@ txcoviddata2 %>%
   #remove legend
   theme(axis.text.x = element_text(angle=45, hjust=1), legend.position="none") +
   #add axis labels and title
-  labs(x= "Case Level", y= "Mean Proportion of Elligible Population Vaccinated", title = "Proportion of Elligible Populations Vaccinated Based on Case Level Severity") 
+  labs(x= "Case Level", y= "Mean Proportion of Eligible Population Vaccinated", title = "Proportion of Eligible Populations Vaccinated Based on Case Level Severity") 
 ```
 
 ![](Project1_files/figure-gfm/Visualizations-3.png)<!-- -->
@@ -368,20 +375,22 @@ confirmed cases. They are cases that may be suspected to be Covid-19, so
 they are much more variable and often times lower than the number of
 verified, confirmed cases. Additionally, the proportion variable that I
 created does not have a correlation between between any of the other
-variables.
+variables. This indicates that the rate at which the counties can
+vaccinate their populations may not differ based on their overall case
+level and size.
 
 I investigated this last detail further bycreating a barplot to
 visualize the mean proportion of vaccinated population for each case
-level group. The “high” case level had an average proportion of 30%, the
-“medium” level had a mean proportion of around 35%, and the “low” case
-level had an average proportion of around 25%. This comes as a surprise
-to me, as I expected the high case level to have the greatest
-proportion, as they have the highest number of vaccines allocated to
-them. However, they have a much larger population to vaccinate, which
-would explain why they have a slightly lower proportion than those
-sorted into the low case level. This would also explain why a
-relationship isn’t demonstrated between the proportion variable and the
-other dataset variables. The size of elligible population and the number
+level group. The “high” case level had an average proportion of around
+30%, the “medium” level had a mean proportion of about 35%, and the
+“low” case level had an average proportion of around 27%. This comes
+as a surprise to me, as I expected the high case level group to have the
+greatest proportion, as they have the highest number of vaccines
+allocated to them. However, they have a much larger population to
+vaccinate, which would explain why they have a slightly lower proportion
+than those sorted into the low case level. This would also explain why a
+correlation isn’t demonstrated between the proportion variable and the
+other dataset variables. The size of eligible population and the number
 of doses allocated and administered do not have an impact on the overall
 proportion of vaccinated population.
 
@@ -392,7 +401,8 @@ the category groups. As demonstrated by the plots, there is a positive,
 linear relationship between counties that have higher case numbers and
 the number of doses administered. This was expected, as we would likely
 see a higher number of doses allocated towards those counties that are
-suffering the most from the pandemic.
+suffering the most from the pandemic. Those in the high case level group
+appear to have the steepest, positive linear correlation.
 
 ## PCA Analysis
 
@@ -537,17 +547,21 @@ percentage of variance explained by these variables. PC1 explains 84.43%
 of the variance among the variables whereas PC2 covers 9.16% of the
 variance between the variables. I visualiazed what variables influenced
 which PC’s by using geom\_segment and geom\_text. As demonstrated by the
-plot, the variable of the proportion of elligible population vaccinated
+plot, the variable of the proportion of eligible population vaccinated
 greatly influenced PC2 while all of the remaining variables influenced
 PC1. Since many of the arrows were close together, I tried to space out
-the variable labels better using the package “ggrepel.” Lastly, I
-visualized each of the observations along PC1 and PC2 and grouped them
-based on their case level. Those observations in the “low” and “medium”
-case levels appear to be greatly varied along the PC2. This could be
+the variable labels better using the package “ggrepel.” It appears that
+PC2 is most influenced by the variable prop\_elligible\_vaccinated while
+PC1 is impacted by the remaining numeric variables. Lastly, I visualized
+each of the observations along PC1 and PC2 and grouped them based on
+their case level. Those observations in the “low” case level appears to
+be greatly varied along the PC2. The “high” and “medium” case level
+groups appear to be more negatively influenced by PC2. This could be
 explained by the fact that the variable of the proportion of those
 vaccinated doesn’t correlate much to any other variables. Neither case
-level appears to be influenced much by PC1. Alternatively, those in the
-“high” case level seem much more affected by PC1 and not as much PC2.
+level appears to be influenced much by PC1. Alternatively, those
+observations in the “high” case level seem more positively affected by
+PC1 than the other two case level groups.
 
 ## References
 
