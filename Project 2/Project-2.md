@@ -436,31 +436,34 @@ sum(abs(diff_means_random)>obs_diff)/length(diff_means_random)
 I used a linear regression model to predict the relationship between the
 total number of doses administered and total doses allocated and the
 total eligible population. I first centered the two explanatory
-variables and thene fit a regression model with an interaction term.
+variables and then fit a regression model with an interaction term.
 Based on the model, for every increase in doses allocated by 1 vaccine,
 the total number of doses administered increases by 0.272. For every
 increase in eligible population by 1 person, the total number of doses
-administered increases by 0.327. My model explains 99.14% of the
-variation in the response variable. I checked the assumptions of
-linearity, normality, and homoscedasticity. A Q-Q plot was constructeed
-to analyze the linearity. Since many of the observations do not fall
-along the line, I can conclude that the model is nonlinear. The
-Shapiro-Wilke test for normality returned a p-value of 2.2e-16,
-indicating that we reject the null hypothesis that the distribution is
-normal and conclude that it is not normal. Finally, the Breusch-Pagan
-test was conducted to check for homoscedasticity. A p-value of 1.61e-10
-was given, meaning that I rejct the null hypothesis that there is
-homoscedasticity and conclude that there is not any. I then computed the
-regression again, this time with robust standard errors. Compared to the
-original regression model, the interaction term between vaccine doses
-allocated and total eligible population is no longer significant. The
-coefficient values are the same, but the standard error values have
-increased. Lastly, I computed bootstrapped standard errors. The
-bootstrapped standard errors are lower than both the original standard
-error values and the robust standard errors. When the robust standard
-errors were calculated and the values were larger, the p-values
-increased as well. Thus, the p-values for the bootstrapped standard
-errors are likely lower than the other two
+administered increases by 0.327. Both of these interactions were
+significant. The interaction between doses allocated and eligible
+population was also significant. The slope for doses allocated on doses
+administered is -3.31E-8 lower for every increase in total eligible
+population by one individual. My model explains 99.14% of the variation
+in the response variable. I checked the assumptions of linearity,
+normality, and homoscedasticity. A Q-Q plot was constructeed to analyze
+the linearity. Since many of the observations do not fall along the
+line, I can conclude that the model is nonlinear. The Shapiro-Wilke test
+for normality returned a p-value of 2.2e-16, indicating that we reject
+the null hypothesis that the distribution is normal and conclude that it
+is not normal. Finally, the Breusch-Pagan test was conducted to check
+for homoscedasticity. A p-value of 1.61e-10 was given, meaning that I
+rejct the null hypothesis that there is homoscedasticity and conclude
+that there is not any. I then computed the regression again, this time
+with robust standard errors. Compared to the original regression model,
+the interaction term between vaccine doses allocated and total eligible
+population is no longer significant. The coefficient values are the
+same, but the standard error values have increased. Lastly, I computed
+bootstrapped standard errors. The bootstrapped standard errors are lower
+than both the original standard error values and the robust standard
+errors. When the robust standard errors were calculated and the values
+were larger, the p-values increased as well. Thus, the p-values for the
+bootstrapped standard errors are likely lower than the other two
 regressions.
 
 ``` r
@@ -619,22 +622,31 @@ model predicting y from the proportion of those fully vaccinated and
 total confirmed fatalities. Every one-unit increase in proportion of
 those fully vaccinated increases the log odds of being placed in the
 high case level category by 0.677 and multiplies the log odds of being
-in the high case level by 1.969. Every one-unit increase in fatalities
-by one death increases the log odds of being placed in the high case
-level category by 0.023 and multiplies the odds of being placed in the
-high case level category by 1.02. A confusion matrix was created from my
-model. The accuracy was 0.957, the sensitivity was 0.829, the
-specificity was 0.977, and the recall was 0.853. Overall, my logistic
-model was fairly accurate in predicting case level based on the
-proportion of those fully vaccinated and how many fatalities were
-reported in the county. A density plot was also made to visualize the
-log-odds by the binary variable I had created. Finally, I created a ROC
-curve and calculated the AUC. The calculated AUC value came out to be
-0.991.The value is very high, indicating that the logistic regression
-model has a very strong predictive power for case level. This means that
-a randomly selected county from the positive group has a test value
-larger than for a randomly chosen county from the negative group 99.1%
-of the time.
+in the high case level by 1.969, but this was not considered significant
+with a p-value of 0.91. Every one-unit increase in fatalities by one
+death increases the log odds of being placed in the high case level
+category by 0.023 and multiplies the odds of being placed in the high
+case level category by 1.02 which was significant with a p-value of
+2.54E-09. A confusion matrix was created from my model. The accuracy was
+0.957, the sensitivity was 0.829, the specificity was 0.977, and the
+recall was 0.853. Overall, my logistic model was fairly accurate in
+predicting case level based on the proportion of those fully vaccinated
+and how many fatalities were reported in the county. A density plot was
+also made to visualize the log-odds by the binary variable I had
+created. Finally, I created a ROC curve and calculated the AUC. The
+calculated AUC value came out to be 0.991.The value is very high,
+indicating that the logistic regression model has a very strong
+predictive power for case level. This means that a randomly selected
+county from the positive group has a test value larger than for a
+randomly chosen county from the negative group 99.1% of the time.
+Overall, I was able to generate a model that accurately predicts y, or a
+high case level, based on the proportion of those fully vaccinated and
+total fatatities. This was surprising to me because I did not believe
+the model would be accurate when taking the proportion variable into
+account, since there is not a significant difference between the high
+case level group and the other two groups. However, the fatalities
+variable must have been enough to supply the model with enough
+information to make accurate predictions.
 
 ``` r
 # Create a binary variable coded as 0 and 1
@@ -782,8 +794,15 @@ txcoviddata %>%
   geom_density(aes(logit, color = case_level, fill = case_level), alpha = .4) +
     geom_rug(aes(logit, color = case_level)) +
   xlab("logit (log-odds)") +
-  labs(title="Density Plot for Log-Odds by y")
+  labs(title="Density Plot for Log-Odds by y") +
+  scale_x_continuous(limits=c(-6,20)) +
+    geom_text(x = -4.5, y = .08, label = "TN = 214", size=3) +
+  geom_text(x = -5, y = -0.01, label = "FN = 6", size=3) +
+  geom_text(x = -2.8, y = .006, label = "FP =5", size=3) +
+  geom_text(x = 2.5, y = .04, label = "TP = 29", size=3)
 ```
+
+    ## Warning: Removed 25 rows containing non-finite values (stat_density).
 
 ![](Project-2_files/figure-gfm/Logistic%20Regression-1.png)<!-- -->
 
